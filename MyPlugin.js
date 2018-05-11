@@ -33,7 +33,7 @@ class MyApp {
     static Main(){
         window.onkeydown = function (event) {
             if(event.key == "a" || event.key == "d")
-                Mario.addAnimation(["../md_xepcore/images/mario/player/1.png", "../md_xepcore/images/mario/player/2.png", "../md_xepcore/images/mario/player/3.png"], 100);
+                Mario.addAnimation(["../images/mario/player/1.png", "../images/mario/player/2.png", "../images/mario/player/3.png"], 100);
             else
                 event.preventDefault();
             if(event.key == "a") {
