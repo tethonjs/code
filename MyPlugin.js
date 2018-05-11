@@ -52,11 +52,11 @@ class MyApp {
                 Mario.addAnimation(["https://code.xepcore.com/images/mario/player/1.png", "https://code.xepcore.com/images/mario/player/2.png", "https://code.xepcore.com/images/mario/player/3.png"], 100);
             else
                 event.preventDefault();
-            if(event.clientX < canvas.getWidth()/2) {
+            if(event.clientX < window.innerWidth/2) {
                 Mario.targetX(Mario.getX() - 10);
                 Mario.flip(true);
             }
-            if(event.clientX > canvas.getWidth()/2) {
+            if(event.clientX > window.innerWidth/2) {
                 Mario.targetX(Mario.getX() + 10);
                 Mario.flip(false);
             }
