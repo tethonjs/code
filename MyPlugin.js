@@ -11,7 +11,7 @@ let canvas = new XCScene(document.getElementById("canvas")),
 canvas.width(window.innerWidth);
 canvas.height(window.innerHeight);
 
-Mario.src("../md_xepcore/images/mario/player/1.png");
+Mario.src("../images/mario/player/1.png");
 Mario.width(35);
 Mario.height(50);
 Mario.x(0);
