@@ -11,7 +11,7 @@ let canvas = new XCScene(document.getElementById("canvas")),
 canvas.width(window.innerWidth);
 canvas.height(window.innerHeight);
 
-Mario.src("../images/mario/player/1.png");
+Mario.src("https://code.xepcore.com/images/mario/player/1.png");
 Mario.width(35);
 Mario.height(50);
 Mario.x(0);
@@ -33,7 +33,7 @@ class MyApp {
     static Main(){
         window.onkeydown = function (event) {
             if(event.key == "a" || event.key == "d")
-                Mario.addAnimation(["../images/mario/player/1.png", "../images/mario/player/2.png", "../images/mario/player/3.png"], 100);
+                Mario.addAnimation(["https://code.xepcore.com/images/mario/player/1.png", "https://code.xepcore.com/images/mario/player/2.png", "https://code.xepcore.com/images/mario/player/3.png"], 100);
             else
                 event.preventDefault();
             if(event.key == "a") {
