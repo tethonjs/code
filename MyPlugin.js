@@ -47,6 +47,20 @@ class MyApp {
                 if(event.ctrlKey) Mario.CPS(3);
             }
         };
+        window.ontouchstart = function(event){
+           if(event.clientX > 0)
+                Mario.addAnimation(["https://code.xepcore.com/images/mario/player/1.png", "https://code.xepcore.com/images/mario/player/2.png", "https://code.xepcore.com/images/mario/player/3.png"], 100);
+            else
+                event.preventDefault();
+            if(event.clientX < canvas.getWidth()/2) {
+                Mario.targetX(Mario.getX() - 10);
+                Mario.flip(true);
+            }
+            if(event.clientX > canvas.getWidth()/2) {
+                Mario.targetX(Mario.getX() + 10);
+                Mario.flip(false);
+            }
+        };
         Mario.on("objectmove", function () {
             if(Mario.getX() > canvas.getWidth()+10)
                 Mario.x(-20);
