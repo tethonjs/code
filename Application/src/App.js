@@ -47,7 +47,7 @@ class MyApp {
             } 
             Square.targetRotate(Math.random()*360);
         }
-        window.ontouchstart = function(event){
+        window.ontouchmove = function(event){
             Square.targetX(event.changedTouches[0].clientX);
             Square.targetY(event.changedTouches[0].clientY);
             Square.targetRotate(Math.random()*360);
