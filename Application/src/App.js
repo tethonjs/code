@@ -27,7 +27,7 @@ Square.width(30);
 Square.height(30);
 Square.x(canvas.getWidth()/2 - Square.getWidth()/2);
 Square.y(canvas.getHeight()/2 - Square.getHeight()/2);
-Square.CPS(10);
+Square.CPS(5);
 
 class MyApp {
     static Main(){
