@@ -33,9 +33,8 @@ class MyApp {
             Circle.targetRotate(Math.random()*360);
         }
         window.ontouchmove = function(event){
-            Circle.targetX(event.changedTouches[0].clientX);
-            Circle.targetY(event.changedTouches[0].clientY);
-            Circle.targetRotate(Math.random()*360);
+            Circle.x(event.changedTouches[0].clientX);
+            Circle.y(event.changedTouches[0].clientY);
         }
     }
 }
