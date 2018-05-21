@@ -1,7 +1,7 @@
 
-import XCScene   from "./xepcore/Scene/Scene.js";
-import XepCore   from "./xepcore/Core.js";
-import XCUIObject  from "./xepcore/Scene/UIObject.js";
+import XCScene   from "./tethon/Scene/Scene.js";
+import XepCore   from "./tethon/Core.js";
+import XCUIObject  from "./tethon/Scene/UIObject.js";
 
 let Menu = new XCUIObject("button");
 

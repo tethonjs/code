@@ -1,6 +1,6 @@
-import THScene   from "./xepcore/Scene/Scene.js";
-import Tethon   from "./xepcore/Core.js";
-import THObject  from "./xepcore/Scene/Object.js";
+import THScene   from "./tethon/Scene/Scene.js";
+import Tethon    from "./tethon/Core.js";
+import THObject  from "./tethon/Scene/Object.js";
 
 let canvas = new THScene(document.getElementById("canvas"));
 var Balls  = [],
