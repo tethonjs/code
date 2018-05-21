@@ -4,7 +4,7 @@ var Applications = [];
 
 import Logger from "./Logger/Logger.js";
 
-export default class XepCore {
+export default class Tethon {
     static get Version(){
         return version;
     }
@@ -57,4 +57,4 @@ export default class XepCore {
         }
     }
 }
-console.log("%cSuccess: %cXepCore has been launched.", "font-weight: bold; color: #99C794", "");
+console.log("%cSuccess: %cTethon has been launched.", "font-weight: bold; color: #99C794", "");

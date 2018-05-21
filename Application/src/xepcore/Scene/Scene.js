@@ -1,10 +1,10 @@
 import Mouse from "./Events/Mouse.js";
-import XCObject from "./Object.js"
+import THObject from "./Object.js"
 
 var Scenes = [],
     Objects = [];
 
-export default class XCScene {
+export default class THScene {
     constructor(getter){
         this.getter = getter;
         Scenes.push({
@@ -39,7 +39,7 @@ CanvasRenderingContext2D.prototype.getHeight = function () {
 CanvasRenderingContext2D.prototype.addObject = function (prop) {
     let cs = this;
     Objects.push(prop);
-    if (prop.XCType == "Image") {
+    if (prop.THType == "Image") {
         var img = new Image();
         img.src = prop.Properties.src;
         img.width = prop.Properties.width;
@@ -48,7 +48,7 @@ CanvasRenderingContext2D.prototype.addObject = function (prop) {
             cs.drawImage(img, prop.Properties.x, prop.Properties.y, prop.Properties.width, prop.Properties.height);
         }
     }
-    if (prop.XCType == "Shape") {
+    if (prop.THType == "Shape") {
         if(prop.Properties.type == "circle"){
             cs.beginPath();
             cs.arc(prop.Properties.x,prop.Properties.y,prop.Properties.radius,0,2*Math.PI);
@@ -80,7 +80,7 @@ CanvasRenderingContext2D.prototype.update = function () {
 
         if(prop.Properties.radius <= prop.Properties.tradius && prop.Properties.tradius != prop.Properties.radius-1) prop.Properties.radius += prop.Properties.cps;
         if(prop.Properties.radius >= prop.Properties.tradius && prop.Properties.tradius != prop.Properties.radius-1) prop.Properties.radius -= prop.Properties.cps;
-        if (prop.XCType == "Image") {
+        if (prop.THType == "Image") {
             var img = new Image();
             img.src = prop.Properties.src;
             img.width = prop.Properties.width;
@@ -107,7 +107,7 @@ CanvasRenderingContext2D.prototype.update = function () {
                 }
             }
         }
-        if (prop.XCType == "Shape") {
+        if (prop.THType == "Shape") {
             if(prop.Properties.type == "circle"){
                 cs.beginPath();
                 cs.arc(prop.Properties.x,prop.Properties.y,prop.Properties.radius,0,2*Math.PI);
@@ -133,6 +133,21 @@ CanvasRenderingContext2D.prototype.update = function () {
 
             }
         }
+        // ONOBJECTCLICK
+        if(Mouse.isActive()){
+            if(prop.THType.toString() == "Shape") {
+                if (prop.Properties.type.toString() == "circle") {
+                    let o1 = {x: prop.Properties.x, y: prop.Properties.y, width: prop.Properties.radius, height: prop.Properties.radius},
+                        o2 = {x: Mouse.x, y: Mouse.y, width: 5, height: 10};
+                     if(isColliding(o1, o2)){
+                        prop.events.click();
+                     }
+                }
+            }
+        }
+        // END
+
+
         // //objectmove
         // if(x !== prop.Properties.x || y !== prop.Properties.y) {
         //     if(prop.event.objectmove)
@@ -149,8 +164,8 @@ CanvasRenderingContext2D.prototype.update = function () {
         //     //         selement = Objects[0];
         //     //     if(element.Properties.x < selement.Properties.x + selement.Properties.width && element.Properties.x + element.Properties.width > selement.Properties.x && element.Properties.y < selement.Properties.y + selement.Properties.height && element.Properties.height + element.Properties.y > selement.Properties.y){
         //     //         var n = prop.constructor.name;
-        //     //         XCObject.get().forEach(function (nelement) {
-        //     //             if(nelement.constructor.name == n.replace("XC","") && nelement.Properties.name == "objectcollision"){
+        //     //         THObject.get().forEach(function (nelement) {
+        //     //             if(nelement.constructor.name == n.replace("TH","") && nelement.Properties.name == "objectcollision"){
         //     //                 if(JSON.stringify(element.Properties) == JSON.stringify(Objects[index].Properties)){
         //     //                     nelement.Properties.function();
         //     //                 }
@@ -161,7 +176,7 @@ CanvasRenderingContext2D.prototype.update = function () {
         // //end
         // //objectclick
         // if(Mouse.isActive()){
-        //     if(prop.XCType.toString() == "Shape"){
+        //     if(prop.THType.toString() == "Shape"){
         //         if(prop.Properties.type.toString() == "circle"){
         //             if(Mouse.x > (prop.Properties.x - prop.Properties.radius) && Mouse.x < (prop.Properties.x + prop.Properties.radius)){
         //                 if(Mouse.y > (prop.Properties.y - prop.Properties.radius) && Mouse.y < (prop.Properties.y + prop.Properties.radius)){
@@ -179,7 +194,7 @@ CanvasRenderingContext2D.prototype.update = function () {
         //             }
         //         }
         //     }
-        //     if(prop.XCType.toString() == "Image"){
+        //     if(prop.THType.toString() == "Image"){
         //         if(Mouse.x > (prop.Properties.x - prop.Properties.width) && Mouse.x < (prop.Properties.x + prop.Properties.width)){
         //             if(Mouse.y > (prop.Properties.y - prop.Properties.height) && Mouse.y < (prop.Properties.y + prop.Properties.height)){
         //                 if(prop.event.objectclick)
@@ -193,8 +208,8 @@ CanvasRenderingContext2D.prototype.update = function () {
         // //ONOBJECTMOVE
         // // if(x !== prop.Properties.x || y !== prop.Properties.y){
         // //     var n = prop.constructor.name;
-        // //     XCObject.get().forEach(function (element) {
-        // //         if(element.constructor.name == n.replace("XC","") && element.Properties.name == "objectmove")
+        // //     THObject.get().forEach(function (element) {
+        // //         if(element.constructor.name == n.replace("TH","") && element.Properties.name == "objectmove")
         // //             element.Properties.function();
         // //     });
         // //     //ONOBJECTCOLLISIONDETECT
@@ -206,8 +221,8 @@ CanvasRenderingContext2D.prototype.update = function () {
         // //     //         selement = Objects[0];
         // //     //     if(element.Properties.x < selement.Properties.x + selement.Properties.width && element.Properties.x + element.Properties.width > selement.Properties.x && element.Properties.y < selement.Properties.y + selement.Properties.height && element.Properties.height + element.Properties.y > selement.Properties.y){
         // //     //         var n = prop.constructor.name;
-        // //     //         XCObject.get().forEach(function (nelement) {
-        // //     //             if(nelement.constructor.name == n.replace("XC","") && nelement.Properties.name == "objectcollision"){
+        // //     //         THObject.get().forEach(function (nelement) {
+        // //     //             if(nelement.constructor.name == n.replace("TH","") && nelement.Properties.name == "objectcollision"){
         // //     //                 if(JSON.stringify(element.Properties) == JSON.stringify(Objects[index].Properties)){
         // //     //                     nelement.Properties.function();
         // //     //                 }
@@ -220,13 +235,13 @@ CanvasRenderingContext2D.prototype.update = function () {
         // //END
         // //ONOBJECTCLICK
         // // if(Mouse.isActive()){
-        // //     if(prop.XCType.toString() == "Shape"){
+        // //     if(prop.THType.toString() == "Shape"){
         // //         if(prop.Properties.type.toString() == "circle"){
         // //             if(Mouse.x > (prop.Properties.x - prop.Properties.radius) && Mouse.x < (prop.Properties.x + prop.Properties.radius)){
         // //                 if(Mouse.y > (prop.Properties.y - prop.Properties.radius) && Mouse.y < (prop.Properties.y + prop.Properties.radius)){
         // //                     var n = prop.constructor.name;
-        // //                     XCObject.get().forEach(function (element) {
-        // //                     if(element.constructor.name == n.replace("XC","") && element.Properties.name == "objectclick")
+        // //                     THObject.get().forEach(function (element) {
+        // //                     if(element.constructor.name == n.replace("TH","") && element.Properties.name == "objectclick")
         // //                         element.Properties.function();
         // //                     });
         // //                 }
@@ -236,20 +251,20 @@ CanvasRenderingContext2D.prototype.update = function () {
         // //             if(Mouse.x > (prop.Properties.x - prop.Properties.width) && Mouse.x < (prop.Properties.x + prop.Properties.width)){
         // //                 if(Mouse.y > (prop.Properties.y - prop.Properties.height) && Mouse.y < (prop.Properties.y + prop.Properties.height)){
         // //                     var n = prop.constructor.name;
-        // //                 XCObject.get().forEach(function (element) {
-        // //                     if(element.constructor.name == n.replace("XC","") && element.Properties.name == "objectclick")
+        // //                 THObject.get().forEach(function (element) {
+        // //                     if(element.constructor.name == n.replace("TH","") && element.Properties.name == "objectclick")
         // //                         element.Properties.function();
         // //                 });
         // //                 }
         // //             }
         // //         }
         // //     }
-        // //     if(prop.XCType.toString() == "Image"){
+        // //     if(prop.THType.toString() == "Image"){
         // //         if(Mouse.x > (prop.Properties.x - prop.Properties.width) && Mouse.x < (prop.Properties.x + prop.Properties.width)){
         // //             if(Mouse.y > (prop.Properties.y - prop.Properties.height) && Mouse.y < (prop.Properties.y + prop.Properties.height)){
         // //                 var n = prop.constructor.name;
-        // //                 XCObject.get().forEach(function (element) {
-        // //                     if(element.constructor.name == n.replace("XC","") && element.Properties.name == "objectclick")
+        // //                 THObject.get().forEach(function (element) {
+        // //                     if(element.constructor.name == n.replace("TH","") && element.Properties.name == "objectclick")
         // //                         element.Properties.function();
         // //                 });
         // //             }
@@ -258,6 +273,7 @@ CanvasRenderingContext2D.prototype.update = function () {
         // //
         // // }
         // //END
+        cs.globalAlpha = 1;
     });
     requestAnimationFrame(function () {
         cs.update();
@@ -272,3 +288,4 @@ function backingScale(context) {
     return 1;
 }
 function drawImage(context,img,x,y,width,height,deg,flip,flop,center){context.save();if(typeof width === "undefined") width = img.width;if(typeof height === "undefined") height = img.height;if(typeof center === "undefined") center = false;if(center) {x -= width/2;y -= height/2;}var flipScale = 1,flopScale = 1;context.translate(x + width/2, y + height/2);var rad = 2 * Math.PI - deg * Math.PI / 180;context.rotate(rad);if(flip) flipScale = -1; else flipScale = 1;if(flop) flopScale = -1; else flopScale = 1;context.scale(flipScale, flopScale);context.drawImage(img, -width/2, -height/2, width, height);context.restore();}
+function isColliding(a,b){return !(((a.y+a.height)<(b.y))||(a.y>(b.y+b.height))||((a.x+a.width)<b.x)||(a.x>(b.x+b.width)));}

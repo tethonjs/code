@@ -1,42 +1,42 @@
+import THScene   from "./xepcore/Scene/Scene.js";
+import Tethon   from "./xepcore/Core.js";
+import THObject  from "./xepcore/Scene/Object.js";
 
-import XCScene   from "./xepcore/Scene/Scene.js";
-import XepCore   from "./xepcore/Core.js";
-import XCObject  from "./xepcore/Scene/Object.js";
-
-let canvas = new XCScene(document.getElementById("canvas")),
-    Circle = new XCObject("Shape");
+let canvas = new THScene(document.getElementById("canvas"));
+var Balls  = [],
+    Colors = ["#2ecc71", "#f1c40f", "#1abc9c", "#9b59b6", "#e74c3c", "#d35400", "#1BBC9B", "#1F4788"];
 
 canvas.width(window.innerWidth);
 canvas.height(window.innerHeight);
 
-Circle.type("circle");
-Circle.radius(30);
-Circle.x(canvas.getWidth()/2 - Circle.getRadius()/2);
-Circle.y(canvas.getHeight()/2 - Circle.getRadius()/2);
-Circle.color("#FC6A8BFF");
-Circle.CPS(5);
+for (var i = 0; i <= Math.round(window.innerHeight / 7); i++){
+    let ball = new THObject("Shape");
+    ball.radius(18);
+    ball.x(canvas.getWidth() / 2 - 15);
+    ball.y(canvas.getHeight() / 2 - 15);
+    ball.CPS(8);
+    ball.targetX(Math.random() * (canvas.getWidth() - 30));
+    ball.targetY(Math.random() * (canvas.getHeight() - 30));
+    ball.color(Colors[Math.round(Math.random() * Colors.length)]);
+    Balls.push(ball);
+}
 
 class MyApp {
     static Main(){
-        canvas.addObject(Circle);
+        let ball = Balls[3];
+        ball.color("black");
+        for (var i = 0; i < Balls.length; i++) {
+            canvas.addObject(Balls[i]);
+        }
+        ball.on("click", function () {
+            for (var i = 0; i < Balls.length; i++) {
+                Balls[i].targetX(ball.getX());
+                Balls[i].targetY(ball.getY());
+                Balls[i].CPS(10);
+            }
+        });
         canvas.update();
-        window.onkeydown = function(event){
-            if(event.keyCode == 39){
-                Circle.targetX(Circle.getX() + 15);
-            } else if(event.keyCode == 37){
-                Circle.targetX(Circle.getX() - 15);
-            } else if(event.keyCode == 38){
-                Circle.targetY(Circle.getY() - 15);
-            } else if(event.keyCode == 40){
-                Circle.targetY(Circle.getY() + 15);
-            } 
-            Circle.targetRotate(Math.random()*360);
-        }
-        window.ontouchmove = function(event){
-            Circle.x(event.changedTouches[0].clientX);
-            Circle.y(event.changedTouches[0].clientY);
-        }
     }
 }
 
-XepCore.AppManager.Init(MyApp);
+Tethon.AppManager.Init(MyApp);

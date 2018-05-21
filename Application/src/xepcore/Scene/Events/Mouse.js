@@ -20,10 +20,28 @@ window.onmousedown = function (event) {
     setTimeout(function () {
         active = false;
     },25);
-}
+};
 window.onmousemove = function(){
     if(active) active = false;
-}
+};
 window.onmouseup = function () {
     active = false;
-}
+};
+
+window.ontouchstart = function (event) {
+    active = true;
+    x = event.touches[0].clientX;
+    y = event.touches[0].clientY;
+    setTimeout(function () {
+        active = false;
+    },25);
+};
+window.ontouchmove = function(){
+    if(active) active = false;
+};
+window.ontouchend = function () {
+    active = false;
+};
+window.ontouchcancel = function () {
+    active = false;
+};
