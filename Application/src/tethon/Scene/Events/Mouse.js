@@ -1,6 +1,7 @@
-var x = 0,
-    y = 0,
-    active = false;
+var x        = 0,
+    y        = 0,
+    active   = false,
+    dragging = false;
 
 export default class Mouse {
     static get x() {
@@ -12,36 +13,53 @@ export default class Mouse {
     static isActive(){
         return active;
     }
+    static isDragging(){
+        return dragging;
+    }
 }
+
+//Mouse
 window.onmousedown = function (event) {
-    active = true;
+    active = false;
+    dragging = true;
     x = event.clientX;
     y = event.clientY;
-    setTimeout(function () {
-        active = false;
-    },25);
 };
 window.onmousemove = function(){
+    x = event.clientX;
+    y = event.clientY;
     if(active) active = false;
 };
 window.onmouseup = function () {
-    active = false;
-};
-
-window.ontouchstart = function (event) {
     active = true;
-    x = event.touches[0].clientX;
-    y = event.touches[0].clientY;
+    dragging = false;
     setTimeout(function () {
         active = false;
     },25);
 };
-window.ontouchmove = function(){
+//Touch screen
+window.ontouchstart = function (event) {
+    active = false;
+    dragging = true;
+    x = event.touches[0].clientX;
+    y = event.touches[0].clientY;
+};
+window.ontouchmove = function(event){
+    x = event.touches[0].clientX;
+    y = event.touches[0].clientY;
     if(active) active = false;
 };
-window.ontouchend = function () {
-    active = false;
-};
 window.ontouchcancel = function () {
-    active = false;
+    active = true;
+    setTimeout(function () {
+        active = false;
+    },25);
+    dragging = false;
+};
+window.ontouchend = function () {
+    active = true;
+    setTimeout(function () {
+        active = false;
+    },25);
+    dragging = false;
 };

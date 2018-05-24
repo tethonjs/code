@@ -20,7 +20,7 @@ export default class THObject {
             }
         }
         this.Properties.x = 0;
-        this.Properties.y = 0
+        this.Properties.y = 0;
         this.Properties.tx = 0;
         this.Properties.ty = 0;
         this.Properties.cps = 1;
@@ -33,19 +33,14 @@ export default class THObject {
         this.Properties.flipped = false;
         this.Properties.trotate = 0;
         this.Properties.rotate = 0;
-        this.Properties.mouseover = false;
-        this.Properties.clicking = false;
+        this.Properties.draggable = false;
         this.Properties.animation = "none";
         this.events = {
-            move: function () {
-                
-            },
-            click: function () {
-                
-            },
-            collision: function () {
-                
-            }
+            move: function(){},
+            click: function(){},
+            collision: function(){},
+            dragstart: function(){},
+            dragend: function(){}
         };
     }
 }
@@ -128,29 +123,14 @@ Object.prototype.type = function(prop){
     if(this.THType.toString() == "Shape") this.Properties.type = prop;
     return this.Properties.type;
 };
+Object.prototype.draggable = function(prop){
+    this.Properties.draggable = prop;
+};
 Object.prototype.targetX = function (prop) {
-    if(this.THType.toString() == "Image" || this.THType.toString() == "Shape") {
-        this.Properties.tx = prop;
-        if(this.Properties.x < this.Properties.tx){
-            this.Properties.x++;
-        } else {
-            this.Properties.x--;
-        }
-    } else {
-        Logger.error(7);
-    }
+    this.Properties.tx = prop;
 };
 Object.prototype.targetY = function (prop) {
-    if(this.THType.toString() == "Image" || this.THType.toString() == "Shape") {
-        this.Properties.ty = prop;
-        if(this.Properties.y < this.Properties.ty){
-            this.Properties.y++;
-        } else {
-            this.Properties.y--;
-        }
-    } else {
-        Logger.error(7);
-    }
+    this.Properties.ty = prop;
 };
 Object.prototype.x = function (prop) {
     this.Properties.x = prop;
@@ -216,9 +196,21 @@ Object.prototype.getOpacity = function(){
 Object.prototype.getSrc = function(){
     return this.Properties.src;
 };
+Object.prototype.isDraggeble = function(){
+    return this.Properties.draggable;
+};
+Object.prototype.isFlipped = function(){
+    return this.Properties.flipped;
+};
 Object.prototype.on = function (event, handler) {
     if(event == "move")
         this.events.move = handler;
     if(event == "click")
         this.events.click = handler;
+    if(event == "collision")
+        this.events.collision = handler;
+    if(event == "dragstart")
+        this.events.dragstart = handler;
+    if(event == "dragend")
+        this.events.dragend = handler;
 };

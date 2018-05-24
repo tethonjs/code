@@ -22,6 +22,18 @@ CanvasRenderingContext2D.prototype.quality = function (prop) {
 CanvasRenderingContext2D.prototype.getQuality = function () {
     return this.imageSmoothingQuality;
 };
+CanvasRenderingContext2D.prototype.color = function (prop) {
+    this.fillStyle = prop;
+};
+CanvasRenderingContext2D.prototype.getColor = function () {
+    return this.fillStyle;
+};
+CanvasRenderingContext2D.prototype.backgroundImage = function (prop) {
+    this.fillStyle = prop;
+};
+CanvasRenderingContext2D.prototype.getBackgroundImage = function () {
+    return this.fillStyle;
+};
 CanvasRenderingContext2D.prototype.width = function (prop) {
     this.canvas.style.width = prop + "px";
     this.canvas.width = prop;
@@ -60,7 +72,6 @@ CanvasRenderingContext2D.prototype.addObject = function (prop) {
 CanvasRenderingContext2D.prototype.update = function () {
     var cs = this;
     cs.clearRect(0,0,cs.canvas.width,cs.canvas.height);
-    // console.log(cs);
     Objects.forEach(function (prop) {
         let x = prop.Properties.x,
             y = prop.Properties.y;
@@ -133,11 +144,11 @@ CanvasRenderingContext2D.prototype.update = function () {
 
             }
         }
-        // ONOBJECTCLICK
+        //objectclick
         if(Mouse.isActive()){
             if(prop.THType.toString() == "Shape") {
                 if (prop.Properties.type.toString() == "circle") {
-                    let o1 = {x: prop.Properties.x, y: prop.Properties.y, width: prop.Properties.radius, height: prop.Properties.radius},
+                     let o1 = {x: prop.Properties.x, y: prop.Properties.y, width: prop.Properties.radius, height: prop.Properties.radius},
                         o2 = {x: Mouse.x, y: Mouse.y, width: 5, height: 10};
                      if(isColliding(o1, o2)){
                         prop.events.click();
@@ -145,7 +156,83 @@ CanvasRenderingContext2D.prototype.update = function () {
                 }
             }
         }
-        // END
+        //end
+        //objectdragstart
+        if(Mouse.isDragging()){
+            if(prop.Properties.draggable) {
+                if (prop.THType.toString() == "Shape") {
+                    if (prop.Properties.type.toString() == "circle") {
+                        let o1 = {
+                                x: prop.Properties.x,
+                                y: prop.Properties.y,
+                                width: prop.Properties.radius,
+                                height: prop.Properties.radius
+                            },
+                            o2 = {
+                                x: Mouse.x,
+                                y: Mouse.y,
+                                width: 5,
+                                height: 10
+                            };
+                        if (isColliding(o1, o2)) {
+                            if (prop.events.dragstart.toString() !== "function(){}") {
+                                prop.Properties.x = Mouse.x;
+                                prop.Properties.y = Mouse.y;
+                                prop.Properties.tx = Mouse.x;
+                                prop.Properties.ty = Mouse.y;
+                                prop.events.dragstart();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //end
+        //objectdragend
+        if(!Mouse.isDragging()){
+            if(prop.Properties.draggable) {
+                if (prop.THType.toString() == "Shape") {
+                    if (prop.Properties.type.toString() == "circle") {
+                        let o1 = {
+                                x: prop.Properties.x,
+                                y: prop.Properties.y,
+                                width: prop.Properties.radius,
+                                height: prop.Properties.radius
+                            },
+                            o2 = {
+                                x: Mouse.x,
+                                y: Mouse.y,
+                                width: 5,
+                                height: 10
+                            };
+                        if (isColliding(o1, o2)) {
+                            if (prop.events.dragstart.toString().replace(new RegExp(" ", "g"), "") !== "function(){}") {
+                                prop.events.dragend();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //end
+        //objectmove
+        if(x !== prop.Properties.x || y !== prop.Properties.y) {
+            prop.events.move();
+            //objectcollision
+                if(Objects.length > 1){
+                    Objects.forEach(function (element) {
+                        if(JSON.stringify(element) !== JSON.stringify(prop)){
+                            let o1 = {x: prop.Properties.x, y: prop.Properties.y, width: prop.Properties.radius, height: prop.Properties.radius},
+                                o2 = {x: element.Properties.x, y: element.Properties.y, width: element.Properties.radius, height: element.Properties.radius};
+                            if(isColliding(o1, o2)){
+                                prop.events.collision();
+                            }
+                        }
+                    });
+                }
+            //end
+        }
+        //end
 
 
         // //objectmove
@@ -289,3 +376,4 @@ function backingScale(context) {
 }
 function drawImage(context,img,x,y,width,height,deg,flip,flop,center){context.save();if(typeof width === "undefined") width = img.width;if(typeof height === "undefined") height = img.height;if(typeof center === "undefined") center = false;if(center) {x -= width/2;y -= height/2;}var flipScale = 1,flopScale = 1;context.translate(x + width/2, y + height/2);var rad = 2 * Math.PI - deg * Math.PI / 180;context.rotate(rad);if(flip) flipScale = -1; else flipScale = 1;if(flop) flopScale = -1; else flopScale = 1;context.scale(flipScale, flopScale);context.drawImage(img, -width/2, -height/2, width, height);context.restore();}
 function isColliding(a,b){return !(((a.y+a.height)<(b.y))||(a.y>(b.y+b.height))||((a.x+a.width)<b.x)||(a.x>(b.x+b.width)));}
+Array.prototype.remove=function(element){this.splice(this.indexOf(element),1)}
