@@ -46,7 +46,7 @@ export default class Tethon {
         x.open("GET", "./language.json", false);
         x.send(null);
         var xo = new XMLHttpRequest();
-        xo.open("GET", "https://code.xepcore.com/customs.json", false);
+        xo.open("GET", "https://code.tethonjs.com/customs.json", false);
         xo.send(null);
         var avaliable = JSON.stringify(Object.keys(JSON.parse(xo.response)));
         if(avaliable.search(JSON.stringify(JSON.parse(x.response).language)) != -1){

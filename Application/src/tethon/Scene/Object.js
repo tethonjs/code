@@ -148,6 +148,9 @@ Object.prototype.y = function (prop) {
         this.Properties.y--;
     }
 };
+Object.prototype.zIndex = function (prop) {
+    THScene.objects().splice(prop, 0, THScene.objects().splice(THScene.objects().indexOf(this),1)[0]);
+};
 Object.prototype.addAnimation = function(prop, delay = 200){
     if(this.Properties.animation == "none"){
         var i = 0,
@@ -196,11 +199,17 @@ Object.prototype.getOpacity = function(){
 Object.prototype.getSrc = function(){
     return this.Properties.src;
 };
+Object.prototype.getType = function(){
+    return this.THType;
+};
 Object.prototype.isDraggeble = function(){
     return this.Properties.draggable;
 };
 Object.prototype.isFlipped = function(){
     return this.Properties.flipped;
+};
+Object.prototype.getColor = function(){
+    return this.Properties.color;
 };
 Object.prototype.on = function (event, handler) {
     if(event == "move")

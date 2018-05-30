@@ -1,5 +1,5 @@
-import Mouse from "./Events/Mouse.js";
-import THObject from "./Object.js"
+import Mouse from "./Events/Interaction.js";
+import THObject from "./Object.js";
 
 var Scenes = [],
     Objects = [];
@@ -22,24 +22,33 @@ CanvasRenderingContext2D.prototype.quality = function (prop) {
 CanvasRenderingContext2D.prototype.getQuality = function () {
     return this.imageSmoothingQuality;
 };
-CanvasRenderingContext2D.prototype.color = function (prop) {
-    this.fillStyle = prop;
+CanvasRenderingContext2D.prototype.background = function (prop) {
+    if(prop.search("rgb") != -1 || prop.search("#") != -1 || prop.search("hex") != -1 || prop.search("hsl") != -1){
+        let bg = new THObject("Shape");
+        bg.type("square");
+        bg.color(prop);
+        bg.width(this.canvas.width);
+        bg.height(this.canvas.height);
+        this.add(bg);
+        console.log(bg, Objects);
+    }
+    else {
+        let img = new THObject("Image");
+        img.src(prop);
+        img.width(this.canvas.width);
+        img.height(this.canvas.height);
+        this.add(img);
+    }
 };
-CanvasRenderingContext2D.prototype.getColor = function () {
-    return this.fillStyle;
-};
-CanvasRenderingContext2D.prototype.backgroundImage = function (prop) {
-    this.fillStyle = prop;
-};
-CanvasRenderingContext2D.prototype.getBackgroundImage = function () {
-    return this.fillStyle;
+CanvasRenderingContext2D.prototype.getBackground = function () {
+    return this.canvas.style.background;
 };
 CanvasRenderingContext2D.prototype.width = function (prop) {
-    this.canvas.style.width = prop + "px";
+    this.canvas.style.width = prop / 2 + "px";
     this.canvas.width = prop;
 };
 CanvasRenderingContext2D.prototype.height = function (prop) {
-    this.canvas.style.height = prop + "px";
+    this.canvas.style.height = prop / 2 + "px";
     this.canvas.height = prop;
 };
 CanvasRenderingContext2D.prototype.getWidth = function () {
@@ -48,7 +57,7 @@ CanvasRenderingContext2D.prototype.getWidth = function () {
 CanvasRenderingContext2D.prototype.getHeight = function () {
     return Math.abs(this.canvas.getAttribute("height"));
 };
-CanvasRenderingContext2D.prototype.addObject = function (prop) {
+CanvasRenderingContext2D.prototype.add = function (prop) {
     let cs = this;
     Objects.push(prop);
     if (prop.THType == "Image") {
@@ -148,8 +157,18 @@ CanvasRenderingContext2D.prototype.update = function () {
         if(Mouse.isActive()){
             if(prop.THType.toString() == "Shape") {
                 if (prop.Properties.type.toString() == "circle") {
-                     let o1 = {x: prop.Properties.x, y: prop.Properties.y, width: prop.Properties.radius, height: prop.Properties.radius},
-                        o2 = {x: Mouse.x, y: Mouse.y, width: 5, height: 10};
+                     let o1 = {
+                             x: prop.Properties.x,
+                             y: prop.Properties.y,
+                             width: prop.Properties.radius,
+                             height: prop.Properties.radius
+                         },
+                        o2 = {
+                            x: Mouse.x,
+                            y: Mouse.y,
+                            width: 15,
+                            height: 15
+                     };
                      if(isColliding(o1, o2)){
                         prop.events.click();
                      }
@@ -171,8 +190,8 @@ CanvasRenderingContext2D.prototype.update = function () {
                             o2 = {
                                 x: Mouse.x,
                                 y: Mouse.y,
-                                width: 5,
-                                height: 10
+                                width: 15,
+                                height: 15
                             };
                         if (isColliding(o1, o2)) {
                             if (prop.events.dragstart.toString() !== "function(){}") {
@@ -202,8 +221,8 @@ CanvasRenderingContext2D.prototype.update = function () {
                             o2 = {
                                 x: Mouse.x,
                                 y: Mouse.y,
-                                width: 5,
-                                height: 10
+                                width: 15,
+                                height: 15
                             };
                         if (isColliding(o1, o2)) {
                             if (prop.events.dragstart.toString().replace(new RegExp(" ", "g"), "") !== "function(){}") {
@@ -225,7 +244,12 @@ CanvasRenderingContext2D.prototype.update = function () {
                             let o1 = {x: prop.Properties.x, y: prop.Properties.y, width: prop.Properties.radius, height: prop.Properties.radius},
                                 o2 = {x: element.Properties.x, y: element.Properties.y, width: element.Properties.radius, height: element.Properties.radius};
                             if(isColliding(o1, o2)){
-                                prop.events.collision();
+                                let event = {
+                                    object: prop,
+                                    detectedObject: element
+                                };
+                                if(event.detectedObject !== null || event.detectedObject !== undefined)
+                                    prop.events.collision.call(event);
                             }
                         }
                     });
@@ -233,147 +257,12 @@ CanvasRenderingContext2D.prototype.update = function () {
             //end
         }
         //end
-
-
-        // //objectmove
-        // if(x !== prop.Properties.x || y !== prop.Properties.y) {
-        //     if(prop.event.objectmove)
-        //         prop.event.objectmove();
-        // }
-        // //objectcollision
-
-        // //end
-        //     // var selement;
-        //     // Objects.forEach(function (element, index) {
-        //     //     if(index+1 < Objects.length)
-        //     //         selement = Objects[index+1];
-        //     //     else
-        //     //         selement = Objects[0];
-        //     //     if(element.Properties.x < selement.Properties.x + selement.Properties.width && element.Properties.x + element.Properties.width > selement.Properties.x && element.Properties.y < selement.Properties.y + selement.Properties.height && element.Properties.height + element.Properties.y > selement.Properties.y){
-        //     //         var n = prop.constructor.name;
-        //     //         THObject.get().forEach(function (nelement) {
-        //     //             if(nelement.constructor.name == n.replace("TH","") && nelement.Properties.name == "objectcollision"){
-        //     //                 if(JSON.stringify(element.Properties) == JSON.stringify(Objects[index].Properties)){
-        //     //                     nelement.Properties.function();
-        //     //                 }
-        //     //             }
-        //     //         });
-        //     //     }
-        //     // });
-        // //end
-        // //objectclick
-        // if(Mouse.isActive()){
-        //     if(prop.THType.toString() == "Shape"){
-        //         if(prop.Properties.type.toString() == "circle"){
-        //             if(Mouse.x > (prop.Properties.x - prop.Properties.radius) && Mouse.x < (prop.Properties.x + prop.Properties.radius)){
-        //                 if(Mouse.y > (prop.Properties.y - prop.Properties.radius) && Mouse.y < (prop.Properties.y + prop.Properties.radius)){
-        //                     if(prop.event.objectclick)
-        //                         prop.event.objectclick();
-        //                 }
-        //             }
-        //         }
-        //         if(prop.Properties.type.toString() == "square"){
-        //             if(Mouse.x > (prop.Properties.x - prop.Properties.width) && Mouse.x < (prop.Properties.x + prop.Properties.width)){
-        //                 if(Mouse.y > (prop.Properties.y - prop.Properties.height) && Mouse.y < (prop.Properties.y + prop.Properties.height)){
-        //                     if(prop.event.objectclick)
-        //                         prop.event.objectclick();
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     if(prop.THType.toString() == "Image"){
-        //         if(Mouse.x > (prop.Properties.x - prop.Properties.width) && Mouse.x < (prop.Properties.x + prop.Properties.width)){
-        //             if(Mouse.y > (prop.Properties.y - prop.Properties.height) && Mouse.y < (prop.Properties.y + prop.Properties.height)){
-        //                 if(prop.event.objectclick)
-        //                     prop.event.objectclick();
-        //             }
-        //         }
-        //     }
-        // }
-        // //end
-        // cs.globalAlpha = 1;
-        // //ONOBJECTMOVE
-        // // if(x !== prop.Properties.x || y !== prop.Properties.y){
-        // //     var n = prop.constructor.name;
-        // //     THObject.get().forEach(function (element) {
-        // //         if(element.constructor.name == n.replace("TH","") && element.Properties.name == "objectmove")
-        // //             element.Properties.function();
-        // //     });
-        // //     //ONOBJECTCOLLISIONDETECT
-        // //     // var selement;
-        // //     // Objects.forEach(function (element, index) {
-        // //     //     if(index+1 < Objects.length)
-        // //     //         selement = Objects[index+1];
-        // //     //     else
-        // //     //         selement = Objects[0];
-        // //     //     if(element.Properties.x < selement.Properties.x + selement.Properties.width && element.Properties.x + element.Properties.width > selement.Properties.x && element.Properties.y < selement.Properties.y + selement.Properties.height && element.Properties.height + element.Properties.y > selement.Properties.y){
-        // //     //         var n = prop.constructor.name;
-        // //     //         THObject.get().forEach(function (nelement) {
-        // //     //             if(nelement.constructor.name == n.replace("TH","") && nelement.Properties.name == "objectcollision"){
-        // //     //                 if(JSON.stringify(element.Properties) == JSON.stringify(Objects[index].Properties)){
-        // //     //                     nelement.Properties.function();
-        // //     //                 }
-        // //     //             }
-        // //     //         });
-        // //     //     }
-        // //     // });
-        // //     //END
-        // // }
-        // //END
-        // //ONOBJECTCLICK
-        // // if(Mouse.isActive()){
-        // //     if(prop.THType.toString() == "Shape"){
-        // //         if(prop.Properties.type.toString() == "circle"){
-        // //             if(Mouse.x > (prop.Properties.x - prop.Properties.radius) && Mouse.x < (prop.Properties.x + prop.Properties.radius)){
-        // //                 if(Mouse.y > (prop.Properties.y - prop.Properties.radius) && Mouse.y < (prop.Properties.y + prop.Properties.radius)){
-        // //                     var n = prop.constructor.name;
-        // //                     THObject.get().forEach(function (element) {
-        // //                     if(element.constructor.name == n.replace("TH","") && element.Properties.name == "objectclick")
-        // //                         element.Properties.function();
-        // //                     });
-        // //                 }
-        // //             }
-        // //         }
-        // //         if(prop.Properties.type.toString() == "square"){
-        // //             if(Mouse.x > (prop.Properties.x - prop.Properties.width) && Mouse.x < (prop.Properties.x + prop.Properties.width)){
-        // //                 if(Mouse.y > (prop.Properties.y - prop.Properties.height) && Mouse.y < (prop.Properties.y + prop.Properties.height)){
-        // //                     var n = prop.constructor.name;
-        // //                 THObject.get().forEach(function (element) {
-        // //                     if(element.constructor.name == n.replace("TH","") && element.Properties.name == "objectclick")
-        // //                         element.Properties.function();
-        // //                 });
-        // //                 }
-        // //             }
-        // //         }
-        // //     }
-        // //     if(prop.THType.toString() == "Image"){
-        // //         if(Mouse.x > (prop.Properties.x - prop.Properties.width) && Mouse.x < (prop.Properties.x + prop.Properties.width)){
-        // //             if(Mouse.y > (prop.Properties.y - prop.Properties.height) && Mouse.y < (prop.Properties.y + prop.Properties.height)){
-        // //                 var n = prop.constructor.name;
-        // //                 THObject.get().forEach(function (element) {
-        // //                     if(element.constructor.name == n.replace("TH","") && element.Properties.name == "objectclick")
-        // //                         element.Properties.function();
-        // //                 });
-        // //             }
-        // //         }
-        // //     }
-        // //
-        // // }
-        // //END
         cs.globalAlpha = 1;
     });
     requestAnimationFrame(function () {
         cs.update();
     });
 };
-function backingScale(context) {
-    if ('devicePixelRatio' in window) {
-        if (window.devicePixelRatio > 1) {
-            return window.devicePixelRatio;
-        }
-    }
-    return 1;
-}
 function drawImage(context,img,x,y,width,height,deg,flip,flop,center){context.save();if(typeof width === "undefined") width = img.width;if(typeof height === "undefined") height = img.height;if(typeof center === "undefined") center = false;if(center) {x -= width/2;y -= height/2;}var flipScale = 1,flopScale = 1;context.translate(x + width/2, y + height/2);var rad = 2 * Math.PI - deg * Math.PI / 180;context.rotate(rad);if(flip) flipScale = -1; else flipScale = 1;if(flop) flopScale = -1; else flopScale = 1;context.scale(flipScale, flopScale);context.drawImage(img, -width/2, -height/2, width, height);context.restore();}
 function isColliding(a,b){return !(((a.y+a.height)<(b.y))||(a.y>(b.y+b.height))||((a.x+a.width)<b.x)||(a.x>(b.x+b.width)));}
-Array.prototype.remove=function(element){this.splice(this.indexOf(element),1)}
+Array.prototype.remove=function(element){this.splice(this.indexOf(element),1)};
