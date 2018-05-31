@@ -40,7 +40,8 @@ export default class THObject {
             click: function(){},
             collision: function(){},
             dragstart: function(){},
-            dragend: function(){}
+            dragend: function(){},
+            stop: function(){}
         };
     }
 }
@@ -54,6 +55,7 @@ Object.prototype.src = function (prop) {
 Object.prototype.width = function (prop) {
     if(this.THType.toString() == "Image" || this.THType.toString() == "Shape") {
         this.Properties.width = prop;
+        this.Properties.twidth = prop;
     } else {
         Logger.error(7);
     }
@@ -61,6 +63,7 @@ Object.prototype.width = function (prop) {
 Object.prototype.height = function (prop) {
     if(this.THType.toString() == "Image" || this.THType.toString() == "Shape") {
         this.Properties.height = prop;
+        this.Properties.theight = prop;
     } else {
         Logger.error(7);
     }
@@ -211,6 +214,12 @@ Object.prototype.isFlipped = function(){
 Object.prototype.getColor = function(){
     return this.Properties.color;
 };
+Object.prototype.hasAnimation = function(){
+    if(this.Properties.animation === "none")
+        return false;
+    else
+        return true;
+};
 Object.prototype.on = function (event, handler) {
     if(event == "move")
         this.events.move = handler;
@@ -218,6 +227,8 @@ Object.prototype.on = function (event, handler) {
         this.events.click = handler;
     if(event == "collision")
         this.events.collision = handler;
+    if(event == "stop")
+        this.events.stop = handler;
     if(event == "dragstart")
         this.events.dragstart = handler;
     if(event == "dragend")

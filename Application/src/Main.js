@@ -1,47 +1,91 @@
-'use strict'
+'use strict';
 
 import Tethon    from "./tethon/Core.js";
 import THScene   from "./tethon/Scene/Scene.js";
 import THObject  from "./tethon/Scene/Object.js";
 
 let canvas = new THScene(document.getElementById("canvas"));
-var Balls  = [],
-    Colors = ["#2ecc71", "#f1c40f", "#1abc9c", "#9b59b6", "#e74c3c", "#d35400", "#1BBC9B", "#1F4788"];
+canvas.width(1000);
+canvas.height(618);
 
-canvas.width(window.innerWidth);
-canvas.height(window.innerHeight);
-canvas.background("https://tethonjs.com/images/mstile-310x310.png");
+var Player = new THObject("Image");
+Player.src("../Tethon.js.code/images/Jungle Asset Pack/Character/stay/1.png");
+Player.width(39);
+Player.height(60);
+Player.x(30);
+Player.y(canvas.getHeight() - Player.getHeight() - 80);
 
-for (var i = 0; i <= Math.round(window.innerHeight / 15); i++){
-    var ball = new THObject("Shape");
-    ball.radius(10);
-    ball.x(canvas.getWidth() / 2 - 15);
-    ball.y(canvas.getHeight() / 2 - 15);
-    ball.targetX(Math.random() * (canvas.getWidth() - 30));
-    ball.targetY(Math.random() * (canvas.getHeight() - 30));
-    ball.color(Colors[Math.round(Math.random() * Colors.length)]);
-    Balls.push(ball);
-    ball = undefined;
+var Backgrounds1 = [], bg1 = null;
+for (var i = 1; i <= 5; i++){
+    bg1 = new THObject("Image");
+    bg1.src("../Tethon.js.code/images/Jungle Asset Pack/parallax background/plx-" + i + ".png");
+    bg1.width(canvas.getWidth());
+    bg1.height(canvas.getHeight());
+    Backgrounds1.push(bg1);
 }
+var Backgrounds2 = [], bg2 = null;
+for (var i = 1; i <= 5; i++){
+    bg2 = new THObject("Image");
+    bg2.src("../Tethon.js.code/images/Jungle Asset Pack/parallax background/plx-" + i + ".png");
+    bg2.width(canvas.getWidth());
+    bg2.height(canvas.getHeight());
+    bg2.x(bg1.getX() + bg1.getWidth());
+    Backgrounds2.push(bg2);
+}
+
+var Ground = new THObject("Image");
+Ground.src("../Tethon.js.code/images/Jungle Asset Pack/parallax background/ground.png");
+Ground.width(1000);
+Ground.y(canvas.getHeight() - 90);
+Ground.height(100);
+var Ground2 = new THObject("Image");
+Ground2.src("../Tethon.js.code/images/Jungle Asset Pack/parallax background/ground.png");
+Ground2.width(1000);
+Ground2.y(canvas.getHeight() - 90);
+Ground2.x(Ground.getX() + Ground.getWidth());
+Ground2.height(100);
 
 class MyApp {
     static Main(){
-        let Ball = Balls[3];
-        Ball.draggable(true);
-        Ball.color("black");
-        Ball.radius(17);
-        for (var i = 0; i < Balls.length; i++) {
-            canvas.add(Balls[i]);
-        }
-        Ball.on("dragstart", function () {
-            console.log("dragging..");
+        bg1, bg2 = null;
+        Backgrounds1.forEach(function (element) {
+            canvas.add(element);
         });
-        Ball.on("collision", function () {
-            if(this.detectedObject.getType() !== "Image"){
-                Ball.zIndex(63);
-                this.detectedObject.color(Colors[Math.round(Math.random() * Colors.length)]);
+        Backgrounds2.forEach(function (element) {
+            canvas.add(element);
+        });
+        canvas.add(Ground);
+        canvas.add(Ground2);
+        canvas.add(Player);
+        Player.zIndex(THScene.objects().length);
+
+        window.onkeydown = function(event){
+            if(Ground.getX() + Ground.getWidth() < 0){
+                Ground.x(Ground2.getX() + Ground2.getWidth());
             }
-        });
+            if(Ground2.getX() + Ground2.getWidth() < 0){
+                Ground2.x(Ground.getX() + Ground.getWidth());
+            }
+            if(event.keyCode === 32){
+                if(!Player.hasAnimation())
+                    Player.addAnimation(["../Tethon.js.code/images/Jungle Asset Pack/Character/run/1.png", "../Tethon.js.code/images/Jungle Asset Pack/Character/run/2.png", "../Tethon.js.code/images/Jungle Asset Pack/Character/run/3.png", "../Tethon.js.code/images/Jungle Asset Pack/Character/run/4.png", "../Tethon.js.code/images/Jungle Asset Pack/Character/run/5.png", "../Tethon.js.code/images/Jungle Asset Pack/Character/run/6.png", "../Tethon.js.code/images/Jungle Asset Pack/Character/run/7.png"], 100);
+                Backgrounds1[1].targetX(Backgrounds1[1].getX() - 5);
+                Backgrounds1[2].targetX(Backgrounds1[2].getX() - 10);
+                Backgrounds1[3].targetX(Backgrounds1[3].getX() - 20);
+                Backgrounds1[4].targetX(Backgrounds1[4].getX() - 30);
+
+                Backgrounds2[1].targetX(Backgrounds2[1].getX() - 5);
+                Backgrounds2[2].targetX(Backgrounds2[2].getX() - 10);
+                Backgrounds2[3].targetX(Backgrounds2[3].getX() - 20);
+                Backgrounds2[4].targetX(Backgrounds2[4].getX() - 30);
+                Ground.targetX(Ground.getX() - 10);
+                Ground2.targetX(Ground2.getX() - 10);
+            }
+        };
+        window.onkeyup = function(){
+            Player.cancelAnimation();
+            Player.src("../Tethon.js.code/images/Jungle Asset Pack/Character/stay/1.png");
+        };
         canvas.update();
     }
 }

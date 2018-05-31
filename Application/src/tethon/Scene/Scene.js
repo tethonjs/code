@@ -12,7 +12,7 @@ export default class THScene {
                 element: getter
             }
         });
-        return getter.getContext("2d");
+        return getter.getContext("2d", { alpha: false });
     }
     static objects(){return Objects;}
 };
@@ -44,11 +44,11 @@ CanvasRenderingContext2D.prototype.getBackground = function () {
     return this.canvas.style.background;
 };
 CanvasRenderingContext2D.prototype.width = function (prop) {
-    this.canvas.style.width = prop / 2 + "px";
+    this.canvas.style.width = prop + "px";
     this.canvas.width = prop;
 };
 CanvasRenderingContext2D.prototype.height = function (prop) {
-    this.canvas.style.height = prop / 2 + "px";
+    this.canvas.style.height = prop + "px";
     this.canvas.height = prop;
 };
 CanvasRenderingContext2D.prototype.getWidth = function () {
@@ -80,6 +80,10 @@ CanvasRenderingContext2D.prototype.add = function (prop) {
 };
 CanvasRenderingContext2D.prototype.update = function () {
     var cs = this;
+    cs.mozImageSmoothingEnabled = false;
+    cs.webkitImageSmoothingEnabled = false;
+    cs.msImageSmoothingEnabled = false;
+    cs.imageSmoothingEnabled = false;
     cs.clearRect(0,0,cs.canvas.width,cs.canvas.height);
     Objects.forEach(function (prop) {
         let x = prop.Properties.x,
@@ -254,6 +258,10 @@ CanvasRenderingContext2D.prototype.update = function () {
                         }
                     });
                 }
+            //end
+        } else {
+            //objectstop
+            prop.events.stop();
             //end
         }
         //end

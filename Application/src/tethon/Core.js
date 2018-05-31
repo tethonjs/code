@@ -10,9 +10,6 @@ export default class Tethon {
     }
     static get AppManager(){
         return class {
-            static getVersion(){
-                return version;
-            }
             static getApplications(){
                 return Applications;
             }
@@ -27,7 +24,8 @@ export default class Tethon {
                 Applications.push({
                     Properties: {
                         name: name,
-                        api: itversion
+                        api: itversion,
+                        method: name.Main()
                     }
                 });
                 for (var i = 0; i < Applications.length; i++) {
