@@ -9,7 +9,7 @@ canvas.width(1000);
 canvas.height(618);
 
 var Player = new THObject("Image");
-Player.src("../Tethon.js.code/images/Jungle Asset Pack/Character/stay/1.png");
+Player.src("../images/Jungle Asset Pack/Character/stay/1.png");
 Player.width(39);
 Player.height(60);
 Player.x(30);
