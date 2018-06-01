@@ -18,7 +18,7 @@ for (var i = 1; i <= 5; i++){
     bg1 = new THObject("Image");
     bg1.src("../images/Jungle Asset Pack/parallax background/plx-" + i + ".png");
     bg1.width(canvas.getWidth()  * 2);
-    bg1.height(canva
+    bg1.height(canvas.getHeight());
     Backgrounds1.push(bg1);
 }
 var Backgrounds2 = [], bg2 = null;
