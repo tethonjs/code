@@ -24,6 +24,7 @@ for(var w = 0; w < canvas.getWidth() + 147; w += 147){
     }
 }
 var Sizes = [{w:70,h:90},{w:140,h:180},{w:35,h:45}],
+Monster = new THObject("Image"),
 GameMenu = {
     Title: new THObject("Image"),
     Buttons: [
@@ -34,7 +35,6 @@ GameMenu = {
     ],
     y: [50, 300, 320, 325, 15]
 },
-Monster = new THObject("Image"),
 Game = {
     isPlaying: false,
     isDead: false
@@ -64,7 +64,6 @@ for (var i = 0; i <= Bullets.maxCount; i++){
             this.detectedObject.remove();
             Bullets.objects.pop();
             this.object.remove();
-            //когда пуля попала в лоб))
         }
     });
     Bullets.objects.push(b);
@@ -193,25 +192,13 @@ class MyApp {
                     BT.filter("opacity", 1);
                     setTimeout(function () {
                         canvas.add(Monster);
-                    }, 4000);
+                    },400);
                 },100);
             }
         });
         GameMenu.Buttons[3].on("click", function () {
             if(Game.isPlaying || Game.isDead){
-                Game.isPlaying = false;
-                GameMenu.Title.targetY(GameMenu.y[0]);
-                GameMenu.Buttons[0].targetY(GameMenu.y[1]);
-                GameMenu.Buttons[1].targetY(GameMenu.y[2]);
-                GameMenu.Buttons[2].targetY(GameMenu.y[3]);
-                GameMenu.Buttons[3].targetY(-85);
-                Player.filter("opacity", 0);
-                Pistol.filter("opacity", 0);
-                YD.filter("opacity", 0);
-                HealthBar.filter("opacity", 0);
-                BC.filter("opacity", 0);
-                HT.filter("opacity", 0);
-                BT.filter("opacity", 0);
+                window.location.reload();
             }
         });
         window.onkeydown = function(event){
@@ -273,7 +260,7 @@ class MyApp {
                     PlayerHP--;
                     HT.text(PlayerHP);
                 } else {
-                    let l = [Player, Monster, Pistol];
+                    let l = [Player, Pistol, Monster];
                     l.forEach(function (element) {
                         element.filter("opacity", 0);
                     });
