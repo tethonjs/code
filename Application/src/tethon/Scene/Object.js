@@ -19,6 +19,14 @@ export default class THObject {
                 tradius: 10
             }
         }
+        if(THType.toString() == "Text"){
+            this.Properties = {
+                color: "#444",
+                innerText: "Hello, world",
+                font: "30px Helvetica",
+                maxWidth: 150
+            }
+        }
         this.Properties.x = 0;
         this.Properties.y = 0;
         this.Properties.tx = 0;
@@ -28,7 +36,24 @@ export default class THObject {
         this.Properties.height = 0;
         this.Properties.twidth = 0;
         this.Properties.theight = 0;
-        this.Properties.opacity = 1;
+        this.Properties.filter = {
+            filterName: "none",
+            propertyName: "none"
+        };
+        this.Properties.gravity = {
+            isBouncing: false,
+            bouncingSpeed: 3,
+            velocity: {
+                x: 0,
+                y: 0
+            },
+            friction: 0.8,
+            attraction: 0.3
+        };
+        this.Properties.scale = {
+            param1: "none",
+            param2: "none"
+        };
         this.Properties.topacity = 1;
         this.Properties.flipped = false;
         this.Properties.trotate = 0;
@@ -83,7 +108,7 @@ Object.prototype.targetHeight = function (prop) {
     }
 };
 Object.prototype.color = function (prop) {
-    if(this.THType.toString() == "Shape") {
+    if(this.THType.toString() == "Shape" || this.THType.toString() == "Text") {
         this.Properties.color = prop;
     } else {
         Logger.error(7);
@@ -100,15 +125,32 @@ Object.prototype.remove = function() {
     for(var i = THScene.objects().length; i--;) {
         if(THScene.objects()[i] === this) {
             THScene.objects().splice(i, 1);
-            delete this;
         }
     }
 };
-Object.prototype.opacity = function(prop) {
-    this.Properties.opacity = prop;
+Object.prototype.filter = function(prop1, prop2) {
+    this.Properties.filter = {filterName: prop1, propertyName: prop2};
 };
-Object.prototype.targetOpacity = function(prop) {
-    this.Properties.topacity = prop;
+Object.prototype.text = function(prop) {
+    this.Properties.innerText = prop;
+};
+Object.prototype.getText = function() {
+    return this.Properties.innerText;
+};
+Object.prototype.font = function(prop) {
+    this.Properties.font = prop;
+};
+Object.prototype.getFont = function() {
+    return this.Properties.font;
+};
+Object.prototype.maxWidth = function(prop) {
+    this.Properties.maxWidth = prop;
+};
+Object.prototype.getMaxWidth = function() {
+    return this.Properties.maxWidth;
+};
+Object.prototype.scale = function(prop1, prop2 = prop1) {
+    this.Properties.scale = {param1: prop1, param2: prop2};
 };
 Object.prototype.rotate = function(prop) {
     this.Properties.rotate = prop;

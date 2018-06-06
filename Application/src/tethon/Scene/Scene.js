@@ -30,7 +30,6 @@ CanvasRenderingContext2D.prototype.background = function (prop) {
         bg.width(this.canvas.width);
         bg.height(this.canvas.height);
         this.add(bg);
-        console.log(bg, Objects);
     }
     else {
         let img = new THObject("Image");
@@ -88,16 +87,18 @@ CanvasRenderingContext2D.prototype.update = function () {
     Objects.forEach(function (prop) {
         let x = prop.Properties.x,
             y = prop.Properties.y;
-        if(prop.Properties.topacity > prop.Properties.opacity) prop.Properties.opacity += prop.Properties.cps;
-        if(prop.Properties.topacity < prop.Properties.opacity) prop.Properties.opacity -= prop.Properties.cps;
-        if(prop.Properties.opacity < 1) {
-            prop.Properties.opacity = Math.abs(prop.Properties.opacity);
-            cs.globalAlpha = prop.Properties.opacity;
+        if(prop.Properties.filter.filterName !== "none" && prop.Properties.filter.propertyName !== "none"){
+            cs.filter = prop.Properties.filter.filterName + "(" + prop.Properties.filter.propertyName + ")";
         }
         if(prop.Properties.tx > prop.Properties.x && prop.Properties.tx !== 0) prop.Properties.x += prop.Properties.cps;
         if(prop.Properties.tx < prop.Properties.x && prop.Properties.tx !== 0) prop.Properties.x -= prop.Properties.cps;
         if(prop.Properties.ty > prop.Properties.y && prop.Properties.ty !== 0) prop.Properties.y += prop.Properties.cps;
         if(prop.Properties.ty < prop.Properties.y && prop.Properties.ty !== 0) prop.Properties.y -= prop.Properties.cps;
+
+        if(prop.Properties.twidth > prop.Properties.width && prop.Properties.twidth !== 0) prop.Properties.width += prop.Properties.cps;
+        if(prop.Properties.twidth < prop.Properties.width && prop.Properties.twidth !== 0) prop.Properties.width -= prop.Properties.cps;
+        if(prop.Properties.theight > prop.Properties.height && prop.Properties.theight !== 0) prop.Properties.height += prop.Properties.cps;
+        if(prop.Properties.theight < prop.Properties.height && prop.Properties.theight !== 0) prop.Properties.height -= prop.Properties.cps;
 
         if(prop.Properties.trotate > prop.Properties.rotate && prop.Properties.trotate !== "none") prop.Properties.rotate += 0.1 * prop.Properties.cps;
         if(prop.Properties.trotate < prop.Properties.rotate && prop.Properties.trotate !== "none") prop.Properties.rotate -= 0.1 * prop.Properties.cps;
@@ -130,6 +131,11 @@ CanvasRenderingContext2D.prototype.update = function () {
                     cs.restore();
                 }
             }
+        }
+        if(prop.THType.toString() == "Text"){
+            cs.font = prop.Properties.font;
+            cs.fillStyle = prop.Properties.color;
+            cs.fillText(prop.Properties.innerText, prop.Properties.x, prop.Properties.y);
         }
         if (prop.THType == "Shape") {
             if(prop.Properties.type == "circle"){
@@ -176,6 +182,23 @@ CanvasRenderingContext2D.prototype.update = function () {
                      if(isColliding(o1, o2)){
                         prop.events.click();
                      }
+                }
+            }
+            if(prop.THType.toString() == "Image" || prop.Properties.type.toString() == "square"){
+                let o1 = {
+                        x: prop.Properties.x,
+                        y: prop.Properties.y,
+                        width: prop.Properties.width,
+                        height: prop.Properties.height
+                    },
+                    o2 = {
+                        x: Mouse.x,
+                        y: Mouse.y,
+                        width: 15,
+                        height: 15
+                    };
+                if(isColliding(o1, o2)){
+                    prop.events.click();
                 }
             }
         }
@@ -245,15 +268,49 @@ CanvasRenderingContext2D.prototype.update = function () {
                 if(Objects.length > 1){
                     Objects.forEach(function (element) {
                         if(JSON.stringify(element) !== JSON.stringify(prop)){
-                            let o1 = {x: prop.Properties.x, y: prop.Properties.y, width: prop.Properties.radius, height: prop.Properties.radius},
-                                o2 = {x: element.Properties.x, y: element.Properties.y, width: element.Properties.radius, height: element.Properties.radius};
-                            if(isColliding(o1, o2)){
-                                let event = {
-                                    object: prop,
-                                    detectedObject: element
-                                };
-                                if(event.detectedObject !== null || event.detectedObject !== undefined)
-                                    prop.events.collision.call(event);
+                            if(element.THType.toString() !== "Text"){
+                                //ИГП
+                                if(prop.THType.toString() == "Image" || prop.THType.toString() == "square" && prop.THType.toString() !== "Text"){
+                                    var o1, o2;
+                                    if(element.THType.toString() == "Image" || element.THType.toString() == "square"){
+                                        o1 = {x: prop.Properties.x, y: prop.Properties.y, width: prop.Properties.width, height: prop.Properties.height},
+                                            o2 = {x: element.Properties.x, y: element.Properties.y, width: element.Properties.width, height: element.Properties.height};
+                                    }
+                                    if(element.THType.toString() == "circle"){
+                                        o1 = {x: prop.Properties.x, y: prop.Properties.y, width: prop.Properties.width, height: prop.Properties.height},
+                                            o2 = {x: element.Properties.x, y: element.Properties.y, width: element.Properties.radius, height: element.Properties.radius};
+                                    }
+
+                                    if(isColliding(o1, o2)){
+                                        let event = {
+                                            object: prop,
+                                            detectedObject: element
+                                        };
+                                        if(event.detectedObject !== null || event.detectedObject !== undefined)
+                                            prop.events.collision.call(event);
+                                    }
+                                }
+                                //ИГП УТВ
+                            }
+
+                            if(prop.THType.toString() == "circle"){
+                                var o1, o2;
+                                if(element.THType.toString() == "Image" || element.THType.toString() == "square"){
+                                    o1 = {x: prop.Properties.x, y: prop.Properties.y, width: prop.Properties.radius, height: prop.Properties.radius},
+                                    o2 = {x: element.Properties.x, y: element.Properties.y, width: element.Properties.width, height: element.Properties.height};
+                                }
+                                if(element.THType.toString() == "circle"){
+                                    o1 = {x: prop.Properties.x, y: prop.Properties.y, width: prop.Properties.radius, height: prop.Properties.radius},
+                                    o2 = {x: element.Properties.x, y: element.Properties.y, width: element.Properties.radius, height: element.Properties.radius};
+                                }
+                                if(isColliding(o1, o2)){
+                                    let event = {
+                                        object: prop,
+                                        detectedObject: element
+                                    };
+                                    if(event.detectedObject !== null || event.detectedObject !== undefined)
+                                        prop.events.collision.call(event);
+                                }
                             }
                         }
                     });
@@ -265,12 +322,14 @@ CanvasRenderingContext2D.prototype.update = function () {
             //end
         }
         //end
-        cs.globalAlpha = 1;
+        cs.filter = "none";
+        cs.fillStyle = "#fff";
     });
     requestAnimationFrame(function () {
         cs.update();
     });
 };
 function drawImage(context,img,x,y,width,height,deg,flip,flop,center){context.save();if(typeof width === "undefined") width = img.width;if(typeof height === "undefined") height = img.height;if(typeof center === "undefined") center = false;if(center) {x -= width/2;y -= height/2;}var flipScale = 1,flopScale = 1;context.translate(x + width/2, y + height/2);var rad = 2 * Math.PI - deg * Math.PI / 180;context.rotate(rad);if(flip) flipScale = -1; else flipScale = 1;if(flop) flopScale = -1; else flopScale = 1;context.scale(flipScale, flopScale);context.drawImage(img, -width/2, -height/2, width, height);context.restore();}
-function isColliding(a,b){return !(((a.y+a.height)<(b.y))||(a.y>(b.y+b.height))||((a.x+a.width)<b.x)||(a.x>(b.x+b.width)));}
-Array.prototype.remove=function(element){this.splice(this.indexOf(element),1)};
+function isColliding(a,b){
+    return !(((a.y+a.height)<(b.y))||(a.y>(b.y+b.height))||((a.x+a.width)<b.x)||(a.x>(b.x+b.width)));
+}

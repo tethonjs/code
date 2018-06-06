@@ -35,7 +35,7 @@ window.onmouseup = function () {
     dragging = false;
     setTimeout(function () {
         active = false;
-    },25);
+    },30);
 };
 //Touch screen
 window.ontouchstart = function (event) {
@@ -53,13 +53,13 @@ window.ontouchcancel = function () {
     active = true;
     setTimeout(function () {
         active = false;
-    },25);
+    },30);
     dragging = false;
 };
 window.ontouchend = function () {
     active = true;
     setTimeout(function () {
         active = false;
-    },25);
+    },30);
     dragging = false;
 };

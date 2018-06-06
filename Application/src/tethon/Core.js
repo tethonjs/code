@@ -13,12 +13,11 @@ export default class Tethon {
             static getApplications(){
                 return Applications;
             }
-            static getApplication(prop1, prop2){
+            static getApplication(prop1){
                 var x = new XMLHttpRequest();
                 x.open("GET", "./" + prop1, false);
                 x.send(null);
                 eval(x.responseText);
-                return x.responseText;
             }
             static Init(name, itversion = version) {
                 Applications.push({
@@ -55,4 +54,4 @@ export default class Tethon {
         }
     }
 }
-console.log("%cSuccess: %cTethon has been launched.", "font-weight: bold; color: #99C794", "");
+console.log("%cSuccess: %cTethon.js has been launched.", "font-weight: bold; color: #99C794", "");
